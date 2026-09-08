@@ -3,7 +3,7 @@ const { getCourses, getCourseById, postCourse, updateCourse, deleteCourse } = re
 
 router.get('/', getCourses);
 router.get('/:id', getCourseById);
-router.post('/', postCourse);
+router.post('/', postCourse)
 router.put('/:id', updateCourse);
 router.delete('/:id', deleteCourse);
 
