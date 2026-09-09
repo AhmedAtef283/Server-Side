@@ -1,4 +1,5 @@
 const express = require('express');
+const DB = require('./data/fetch.js');
 const app = express()
 const port = 3000
 app.use(express.json())
@@ -14,6 +15,8 @@ app.use('/api/courses', coursesRoutes);
 
 app.listen(port, () => {
     console.log(`Example app listening on localhost:${port}`)
+    DB.Connect();
 })
+
 
 
