@@ -1,11 +1,12 @@
 # Courses API
 
-A simple RESTful API built with Express.js for managing a list of courses. Supports full CRUD operations (Create, Read, Update, Delete) using an in-memory data store.
+A RESTful API built with Express.js for managing courses stored in MongoDB. Supports full CRUD operations (Create, Read, Update, Delete) against the `Courses` collection.
 
 ## Tech Stack
 
 - **Node.js**
 - **Express.js** (v5)
+- **Mongoose** (MongoDB)
 - **Nodemon** (for development)
 
 ## Project Structure
@@ -14,11 +15,11 @@ A simple RESTful API built with Express.js for managing a list of courses. Suppo
 server_side/
 ├── index.js                        # App entry point
 ├── routes/
-│   └── coures.routes.js            # Course route definitions
+│   └── courses.routes.js           # Course route definitions
 ├── controllers/
 │   └── courses.controllers.js      # Route handler logic
 ├── data/
-│   └── db.js                       # In-memory courses data
+│   └── fetch.js                    # MongoDB connection and course schema
 ├── package.json
 └── package-lock.json
 ```
@@ -28,6 +29,7 @@ server_side/
 ### Prerequisites
 
 - Node.js installed on your machine
+- Access to the MongoDB Atlas cluster used by this project
 
 ### Installation
 
@@ -47,7 +49,7 @@ npm run dev
 npm start
 ```
 
-The server will start on `http://localhost:3000`.
+The server will start on `http://localhost:3000` and then connect to MongoDB. On success you should see `Connected successfully!` in the console.
 
 ## API Endpoints
 
@@ -61,18 +63,39 @@ Base path: `/api/courses`
 | PUT    | `/api/courses/:id`   | Update an existing course |
 | DELETE | `/api/courses/:id`   | Delete a course           |
 
+### Course fields
+
+| Field          | Type   | Notes                                      |
+|----------------|--------|--------------------------------------------|
+| `topic`        | String | Required; leading/trailing spaces trimmed  |
+| `difficulty`   | Number | Required                                   |
+| `price`        | String | Required; trimmed (for example `"free"`)   |
+| `release_year` | Number | Required                                   |
+| `format`       | String | Required; trimmed                          |
+| `url`          | String | Required; trimmed                          |
+| `label`        | String | Required; trimmed                          |
+| `author`       | String | Required; trimmed                          |
+
 ### Request Body (POST / PUT)
 
 ```json
 {
-  "name": "Course Name",
-  "price": 100
+  "topic": "Natural Language Processing",
+  "difficulty": 2,
+  "price": "free",
+  "release_year": 2021,
+  "format": "YouTube playlist",
+  "url": "https://www.youtube.com/playlist?list=example",
+  "label": "CS224N: Natural Language Processing with Deep Learning",
+  "author": "Stanford University"
 }
 ```
 
 **Validation rules:**
-- `name` is required and must be at least 3 characters long.
-- `price` is required and must be greater than 0.
+- All fields listed above are required.
+- String fields are trimmed before they are saved.
+- PUT with an empty body returns `400`.
+- PUT runs schema validators on the update.
 
 ### Example Responses
 
@@ -80,9 +103,15 @@ Base path: `/api/courses`
 ```json
 [
   {
-    "id": 1,
-    "name": "Intro to JavaScript",
-    "price": 50
+    "_id": "6aa1492879ea9de200868948",
+    "topic": "Natural Language Processing",
+    "difficulty": 2,
+    "price": "free",
+    "release_year": 2021,
+    "format": "YouTube playlist",
+    "url": "https://www.youtube.com/playlist?list=example",
+    "label": "CS224N: Natural Language Processing with Deep Learning",
+    "author": "Stanford University"
   }
 ]
 ```
@@ -90,15 +119,34 @@ Base path: `/api/courses`
 **POST `/api/courses`** — `201 Created`
 ```json
 {
-  "id": 2,
-  "name": "Advanced Node.js",
-  "price": 120
+  "_id": "6aa1492879ea9de200868950",
+  "topic": "Deep Learning",
+  "difficulty": 2,
+  "price": "free",
+  "release_year": 2023,
+  "format": "website",
+  "url": "https://example.com/course",
+  "label": "Deep Learning Fundamentals",
+  "author": "Sebastian Raschka"
 }
+```
+
+**DELETE `/api/courses/:id`** — `200 OK`
+```
+Course deleted successfully
 ```
 
 **Error example** — `400 Bad Request`
 ```
-Name is required and should be minimum 3 characters.
+Error creating course
+```
+
+```
+Request body cannot be empty
+```
+
+```
+Invalid course ID, missing required fields, or invalid data format
 ```
 
 **Not found** — `404 Not Found`
@@ -108,7 +156,8 @@ Course not found
 
 ## Notes
 
-- Data is stored **in memory**, so it resets whenever the server restarts.
+- Course data lives in MongoDB (`Courses` collection), so it persists across server restarts.
+- Course IDs are MongoDB `_id` values, not numeric `id` fields.
 - The root route `/` returns a simple message: `Server is running, try /api/courses`.
 
 ## License
