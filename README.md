@@ -1,6 +1,6 @@
 # Courses API
 
-A RESTful API built with Express.js for managing courses stored in MongoDB. Supports full CRUD operations (Create, Read, Update, Delete) against the `Courses` collection.
+A RESTful API built with Express.js for managing courses stored in MongoDB, plus a simple catalog UI. Supports full CRUD operations (Create, Read, Update, Delete) against the `Courses` collection.
 
 ## Tech Stack
 
@@ -20,6 +20,10 @@ server_side/
 │   └── courses.controllers.js      # Route handler logic
 ├── data/
 │   └── fetch.js                    # MongoDB connection and course schema
+├── public/
+│   ├── index.html                  # Catalog UI
+│   ├── styles.css
+│   └── app.js
 ├── package.json
 └── package-lock.json
 ```
@@ -50,6 +54,8 @@ npm start
 ```
 
 The server will start on `http://localhost:3000` and then connect to MongoDB. On success you should see `Connected successfully!` in the console.
+
+Open `http://localhost:3000` in a browser to use the catalog: search, filter by topic, add, edit, and delete courses. The REST API remains at `/api/courses`.
 
 ## API Endpoints
 
@@ -158,7 +164,7 @@ Course not found
 
 - Course data lives in MongoDB (`Courses` collection), so it persists across server restarts.
 - Course IDs are MongoDB `_id` values, not numeric `id` fields.
-- The root route `/` returns a simple message: `Server is running, try /api/courses`.
+- The root route `/` serves the catalog UI from the `public/` folder.
 
 ## License
 
