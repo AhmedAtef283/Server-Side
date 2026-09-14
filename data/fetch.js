@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
-const DB_URI = 'mongodb+srv://aatef83156_db_user:DB_123@db.x72asvs.mongodb.net/Node';
+const DB_URI = process.env.DB_URI;
 
 const existingDataSchema = new mongoose.Schema({
     topic: { type: String, required: true, trim: true },
