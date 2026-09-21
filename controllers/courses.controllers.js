@@ -14,10 +14,10 @@ function postCourse (req, res){
     };
     db.MyData.create(newCourse)
     .then(course => {
-        res.status(201).json(course);
+        res.status(201).json({ status: "success", data: { course } });
     })
     .catch(error => {
-        res.status(400).send('Error creating course');
+        res.status(400).json({ status: "error", message: "Error creating course" });
     });
 }
 
@@ -25,7 +25,7 @@ function postCourse (req, res){
 async function getCourses(req, res)  {
     MyData = db.MyData;
     const data = await db.MyData.find({});
-    res.json(data)
+    res.json({ status: "success",  data: { courses: data } });
 }
 
 
@@ -34,11 +34,11 @@ function getCourseById (req, res) {
         CourseID = req.params.id
         db.MyData.findById(CourseID)
         .then(course => {
-            if (!course) return res.status(404).send('Course not found');
-            res.json(course);
+            if (!course) return res.status(404).json({ status: "error", message: "Course not found" });
+            res.json({ status: "success", data: { course } });
         })
         .catch(error => {
-            res.status(400).send('Invalid course ID');
+            res.status(400).json({ status: "error", message: "Invalid course ID" });
         });
 }
 
@@ -47,7 +47,7 @@ function updateCourse(req, res) {
     const courseID = req.params.id;
 
     if (!req.body || Object.keys(req.body).length === 0) {
-        return res.status(400).send('Request body cannot be empty');
+        return res.status(400).json({ status: "error", message: "Request body cannot be empty" });
     }
     db.MyData.findByIdAndUpdate(
         courseID, 
@@ -55,12 +55,12 @@ function updateCourse(req, res) {
         { returnDocument: 'after', runValidators: true, context: 'query' }
     )
     .then(course => {
-        if (!course) return res.status(404).send('Course not found');
-        res.json(course);
+        if (!course) return res.status(404).json({ status: "error", message: "Course not found" });
+        res.json({ status: "success", data: { course } });
     })
     .catch(error => {
         console.error('Update Error:', error);
-        res.status(400).send('Invalid course ID, missing required fields, or invalid data format');
+        res.status(400).json({ status: "error", message: "Invalid course ID, missing required fields, or invalid data format" });
     });
 }
 
@@ -69,24 +69,13 @@ function deleteCourse  (req, res) {
         CourseID = req.params.id
         db.MyData.findByIdAndDelete(CourseID)
         .then(course => {
-            if (!course) return res.status(404).send('Course not found');
-            res.status(200).json(`Course deleted successfully`);
+            if (!course) return res.status(404).json({ status: "error", message: "Course not found" });
+            res.json({ status: "success", message: "Course deleted successfully" });
         })
         .catch(error => {
-            res.status(400).send('Invalid course ID');
+            res.status(400).json({ status: "error", message: "Invalid course ID" });
         });
 }
-
-
-
-
-
-
-
-
-
-
-
 
 module.exports = {
     postCourse,
