@@ -3,7 +3,8 @@ const path = require('path');
 const express = require('express');
 const DB = require('./data/fetch.js');
 const app = express();
-
+const cors = require('cors');
+app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
