@@ -17,14 +17,25 @@ const existingDataSchema = new mongoose.Schema({
 const MyData = mongoose.model('course', existingDataSchema, 'Courses');
 
 async function Connect() {
-try {
+    // Already connected (or connecting) - don't reconnect on every invocation.
+    if (mongoose.connection.readyState === 1) {
+        return;
+    }
+
     console.log('Connecting to database...');
-    await mongoose.connect(DB_URI);
-    
+
+    // Fail fast instead of hanging for the platform's default 30s server
+    // selection window - that's longer than Vercel's function timeout,
+    // so a real connection failure was showing up as a silent hang.
+    await mongoose.connect(DB_URI, {
+        serverSelectionTimeoutMS: 5000,
+        bufferCommands: false,
+    });
+
     console.log('Connected successfully!');
-    } catch (error) {
-    console.error('Error connecting to database:', error);
-    }
-    }
+    // Errors are intentionally NOT caught here - they're re-thrown so
+    // index.js can see the failure and respond with a proper error
+    // instead of the request hanging until Vercel kills the function.
+}
 
 module.exports = { Connect, MyData };
