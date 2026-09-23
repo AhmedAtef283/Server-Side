@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Catalog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <p class="eyebrow">Courses API</p>
+      <h1>Catalog</h1>
+      <p class="lede">Browse, add, edit, and remove courses stored in MongoDB.</p>
+    </header>
+
+    <section class="toolbar">
+      <p id="status-line" class="status-line">Loading catalog…</p>
+      <div class="toolbar-actions">
+        <button type="button" class="btn ghost" id="prev-page" disabled>Previous</button>
+        <button type="button" class="btn ghost" id="next-page" disabled>Next</button>
+        <button type="button" class="btn primary" id="add-course">Add course</button>
+      </div>
+    </section>
+
+    <main id="course-grid" class="grid" aria-live="polite"></main>
+  </div>
+
+  <dialog id="course-dialog">
+    <form id="course-form">
+      <h2 id="dialog-title">Add course</h2>
+      <input type="hidden" name="_id" id="field-id">
+
+      <label>Label
+        <input name="label" id="field-label" required>
+      </label>
+      <label>Topic
+        <input name="topic" id="field-topic" required>
+      </label>
+      <label>Author
+        <input name="author" id="field-author" required>
+      </label>
+      <div class="form-row">
+        <label>Difficulty
+          <input name="difficulty" id="field-difficulty" type="number" min="1" required>
+        </label>
+        <label>Release year
+          <input name="release_year" id="field-year" type="number" min="1900" required>
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Price
+          <input name="price" id="field-price" required>
+        </label>
+        <label>Format
+          <input name="format" id="field-format" required>
+        </label>
+      </div>
+      <label>URL
+        <input name="url" id="field-url" type="url" required>
+      </label>
+
+      <p id="form-error" class="form-error" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn ghost" id="cancel-dialog">Cancel</button>
+        <button type="submit" class="btn primary" id="save-course">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <p id="toast" class="toast" hidden></p>
+  <script src="/app.js"></script>
+</body>
+</html>
