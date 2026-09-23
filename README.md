@@ -7,6 +7,7 @@ A RESTful API built with Express.js for managing courses stored in MongoDB, plus
 - **Node.js**
 - **Express.js** (v5)
 - **Mongoose** (MongoDB)
+- **Vanilla HTML/CSS/JS** catalog UI
 - **Nodemon** (for development)
 
 ## Project Structure
@@ -105,21 +106,29 @@ Base path: `/api/courses`
 
 ### Example Responses
 
-**GET `/api/courses`**
+**GET `/api/courses?page=1&limit=6`**
 ```json
-[
-  {
-    "_id": "6aa1492879ea9de200868948",
-    "topic": "Natural Language Processing",
-    "difficulty": 2,
-    "price": "free",
-    "release_year": 2021,
-    "format": "YouTube playlist",
-    "url": "https://www.youtube.com/playlist?list=example",
-    "label": "CS224N: Natural Language Processing with Deep Learning",
-    "author": "Stanford University"
+{
+  "status": "success",
+  "data": {
+    "courses": [
+      {
+        "_id": "6aa1492879ea9de200868948",
+        "topic": "Natural Language Processing",
+        "difficulty": 2,
+        "price": "free",
+        "release_year": 2021,
+        "format": "YouTube playlist",
+        "url": "https://www.youtube.com/playlist?list=example",
+        "label": "CS224N: Natural Language Processing with Deep Learning",
+        "author": "Stanford University"
+      }
+    ],
+    "total": 31,
+    "page": 1,
+    "limit": 6
   }
-]
+}
 ```
 
 **POST `/api/courses`** — `201 Created`

@@ -23,9 +23,18 @@ function postCourse (req, res){
 
 
 async function getCourses(req, res)  {
-    MyData = db.MyData;
-    const data = await db.MyData.find({});
-    res.json({ status: "success",  data: { courses: data } });
+    try {
+        const limit = Math.max(1, Number(req.query.limit) || 4);
+        const page = Math.max(1, Number(req.query.page) || 1);
+        const skip = (page - 1) * limit;
+        const [courses, total] = await Promise.all([
+            db.MyData.find({}).limit(limit).skip(skip),
+            db.MyData.countDocuments()
+        ]);
+        res.json({ status: "success", data: { courses, total, page, limit } });
+    } catch (error) {
+        res.status(500).json({ status: "error", message: "Error fetching courses" });
+    }
 }
 
 
